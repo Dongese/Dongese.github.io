@@ -69,6 +69,21 @@ class HtmlEngine(QtGui.QMainWindow):
         return listView
 
 
+'''
+The QStandartItemModel of ListView and TreeView will be generated 
+by the class Model.
+'''
+class Model(object):
+    def __init__(self):
+        pass
+
+    def listViewModel(self):
+        pass
+
+
+
+
+
 
 
 '''
