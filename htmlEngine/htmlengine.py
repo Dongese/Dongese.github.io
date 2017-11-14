@@ -6,7 +6,7 @@ last edited: Nov 2017
 """
 
 import sys
-from PySide import QtGui
+from PySide import QtGui,QtCore
 
 
 class HtmlEngine(QtGui.QMainWindow):
@@ -25,14 +25,15 @@ class HtmlEngine(QtGui.QMainWindow):
         #toobar
         self._toolBar()
 
-        # #Grid layout
-        # grid = QtGui.QGridLayout()
-        # grid.addWidget(self._treeView())
-        #
-        # #main layout
-        # main_widget = QtGui.QWidget()
-        # main_widget.setLayout(grid)
-        # self.setCentralWidget(main_widget)
+        #Grid layout
+        grid = QtGui.QGridLayout()
+        grid.addWidget(self._treeView(),0,1)
+        grid.addWidget(self._listView(),0,0)
+
+        #main layout
+        main_widget = QtGui.QWidget()
+        main_widget.setLayout(grid)
+        self.setCentralWidget(main_widget)
 
         #get/set the size of mainwindow.
         window_width, window_height = QtGui.QDesktopWidget().screenGeometry().width()/2, QtGui.QDesktopWidget().screenGeometry().height()/2
@@ -53,8 +54,19 @@ class HtmlEngine(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(self.actions.exitAction(self))
 
+    #set treeView
     def _treeView(self):
-        pass
+        treeView = QtGui.QTreeView()
+        model = QtGui.QFileSystemModel()
+        model.setRootPath(QtCore.QDir.currentPath())
+        treeView.setModel(model)
+        return treeView
+
+    def _listView(self):
+        listView = QtGui.QListView()
+        model = QtGui.QStandardItemModel()
+        listView.setModel(model)
+        return listView
 
 
 
