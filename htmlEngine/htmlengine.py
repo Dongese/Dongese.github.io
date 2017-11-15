@@ -6,6 +6,7 @@ last edited: Nov 2017
 """
 
 import sys
+from control import *
 from PySide import QtGui,QtCore
 
 
@@ -13,7 +14,7 @@ class HtmlEngine(QtGui.QMainWindow):
 
     def __init__(self):
         super(HtmlEngine, self).__init__()
-        self.actions = Action()
+        self.actions = Action(self)
         self.mainWidgets()
 
 
@@ -47,12 +48,12 @@ class HtmlEngine(QtGui.QMainWindow):
     def _menuBar(self):
         menubar = self.menuBar()
         fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(self.actions.exitAction(self))
+        fileMenu.addAction(self.actions.exitAction())
 
     #set toolBar
     def _toolBar(self):
         toolbar = self.addToolBar('Exit')
-        toolbar.addAction(self.actions.exitAction(self))
+        toolbar.addAction(self.actions.addTemplate())
 
     #set treeView
     def _treeView(self):
@@ -69,6 +70,7 @@ class HtmlEngine(QtGui.QMainWindow):
         return listView
 
 
+
 '''
 The QStandartItemModel of ListView and TreeView will be generated 
 by the class Model.
@@ -81,26 +83,30 @@ class Model(object):
         pass
 
 
-
-
-
-
-
 '''
-I put all of Action here.
+All of Action in menuBar and toolBar are defined there.
 '''
 class Action:
-    def __int__(self):
-        pass
+    def __init__(self,frame):
+        self.frame = frame
 
-    def exitAction(self,frame):
-        exitAction = QtGui.QAction('Exit', frame)
+    def exitAction(self):
+        exitAction = QtGui.QAction('Exit', self.frame)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(frame.close)
+        exitAction.triggered.connect(self.frame.close)
         return exitAction
 
+    def addTemplate(self):
+        addAction = QtGui.QAction('add Html', self.frame)
+        addAction.setShortcut('Ctrl+A')
+        addAction.setStatusTip('Add Html Template')
+        addAction.triggered.connect(self.loadNewTemplate)
+        return addAction
 
+    def loadNewTemplate(self):
+        file_path = newHtmlFile()
+        print file_path
 
 
 
