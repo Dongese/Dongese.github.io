@@ -7,13 +7,14 @@ def newHtmlFile():
     return filename
 
 
-def treeDictionary(tag_list,data_list):
-	tree_dict = {}
-	for tag, data in zip(tag_list,data_list):
-		if tag != "data":
-			
-
-
+def treeDictionary(tree_dict,tag_list,data_list):
+    if len(tag_list) != 0 and len(data_list)!= 0:
+        tag,data= tag_list.pop(),data_list.pop()
+        if tag == 'start':
+            tree_dict[data] = {}
+            treeDictionary(tree_dict[tag],tag_list,data_list)
+        else:
+            
 
 
 
@@ -24,20 +25,27 @@ def setStandardItemModel(file_path):
     f = codecs.open(file_path,'r','utf-8')
     parser = TheHTMLParser()
     parser.feed(f.read())
-    model = QtGui.QStandardItemModel()
-    parentItem = model.invisibleRootItem()
-    for tag,data in zip(parser.tag,parser.tagdata):
-    	item = QtGui.QStandardItem(data)
-    	if tag != "data":
+    test = {}
+    tag,tagdata = parser.tag,parser.tagdata
+    treeDictionary(test,tag,tagdata)
+    print test
+
+
+
+    # model = QtGui.QStandardItemModel()
+    # parentItem = model.invisibleRootItem()
+    # for tag,data in zip(parser.tag,parser.tagdata):
+    # 	item = QtGui.QStandardItem(data)
+    # 	if tag != "data":
 
 
 
 
-    for i in range(4):
-        item = QtGui.QStandardItem("item %d" % i)
-        parentItem.appendRow(item)
-        parentItem = item
-    return model
+    # for i in range(4):
+    #     item = QtGui.QStandardItem("item %d" % i)
+    #     parentItem.appendRow(item)
+    #     parentItem = item
+    # return model
 
 
 class TheHTMLParser(HTMLParser,object):
