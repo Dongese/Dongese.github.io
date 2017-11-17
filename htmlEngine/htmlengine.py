@@ -106,7 +106,8 @@ class Action:
 
     def loadNewTemplate(self):
         file_path = newHtmlFile()
-        print file_path
+        setStandardItemModel(file_path)
+        
 
 
 
