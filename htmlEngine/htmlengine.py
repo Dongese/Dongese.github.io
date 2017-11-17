@@ -14,7 +14,10 @@ class HtmlEngine(QtGui.QMainWindow):
 
     def __init__(self):
         super(HtmlEngine, self).__init__()
-        self.actions = Action(self)
+        #listView,treeView
+        self.listView = self._listView()
+        self.treeView = self._treeView()
+        self.actions = Action(self,self.listView,self.treeView)
         self.mainWidgets()
 
 
@@ -28,8 +31,8 @@ class HtmlEngine(QtGui.QMainWindow):
 
         #Grid layout
         grid = QtGui.QGridLayout()
-        grid.addWidget(self._treeView(),0,1)
-        grid.addWidget(self._listView(),0,0)
+        grid.addWidget(self.treeView,0,1)
+        grid.addWidget(self.listView,0,0)
 
         #main layout
         main_widget = QtGui.QWidget()
@@ -87,9 +90,10 @@ class Model(object):
 All of Action in menuBar and toolBar are defined there.
 '''
 class Action:
-    def __init__(self,frame):
+    def __init__(self,frame,listView,treeView):
         self.frame = frame
-
+        self.listView = listView
+        self.treeView = treeView
     def exitAction(self):
         exitAction = QtGui.QAction('Exit', self.frame)
         exitAction.setShortcut('Ctrl+Q')
@@ -106,8 +110,8 @@ class Action:
 
     def loadNewTemplate(self):
         file_path = newHtmlFile()
-        setStandardItemModel(file_path)
-        
+        model = setStandardItemModel(file_path)
+        self.treeView.setModel(model)
 
 
 
