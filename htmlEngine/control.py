@@ -14,7 +14,7 @@ def treeDictionary(tree_dict,tag_list,data_list):
             tree_dict[data] = {}
             treeDictionary(tree_dict[tag],tag_list,data_list)
         else:
-            
+
 
 
 
