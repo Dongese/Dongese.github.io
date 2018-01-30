@@ -7,13 +7,19 @@ def newHtmlFile():
     return filename
 
 
-def treeDictionary(tree_dict,tag_list,data_list):
+def treeDictionary(tag_list,data_list):
     if len(tag_list) != 0 and len(data_list)!= 0:
         tag,data= tag_list.pop(),data_list.pop()
+        if treeDictionary(tag_list,data_list) == False:
+            return data
+
+        if tag == 'end':
+            return False
+
         if tag == 'start':
             tree_dict[data] = {}
             treeDictionary(tree_dict[tag],tag_list,data_list)
-        else:
+        
             
 
 
