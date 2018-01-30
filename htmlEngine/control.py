@@ -19,8 +19,7 @@ def treeDictionary(tag_list,data_list):
         if tag == 'start':
             tree_dict[data] = {}
             treeDictionary(tree_dict[tag],tag_list,data_list)
-        
-            
+
 
 
 
