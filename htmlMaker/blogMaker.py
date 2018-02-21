@@ -12,6 +12,7 @@ class BlogMaker(object):
 		self.writePostPage()
 		self.recordInfo()
 		self.writeIndexPage()
+		self.writeSharePage()
 
 
 	def checkAndLoadHtml(self):
@@ -19,19 +20,26 @@ class BlogMaker(object):
 		indexHeaderPath   = os.path.join(os.getcwd(),"index\\header.html")
 		indexFooterPath   = os.path.join(os.getcwd(),"index\\footer.html")
 		indexTemplatePath = os.path.join(os.getcwd(),"index\\template.html") 
-		if os.path.exists(indexHeaderPath) and os.path.exists(indexFooterPath) and os.path.exists(indexTemplatePath):
-			self.indexHeader   = self.readHtml(indexHeaderPath)
-			self.indexFooter   = self.readHtml(indexFooterPath)
-			self.indexTemplate = self.readHtml(indexTemplatePath)
+		self.indexHeader   = self.readHtml(indexHeaderPath)
+		self.indexFooter   = self.readHtml(indexFooterPath)
+		self.indexTemplate = self.readHtml(indexTemplatePath)
 
 		# Post Page
 		postHeaderPath  = os.path.join(os.getcwd(),"post\\header.html")
 		postFooterPath  = os.path.join(os.getcwd(),"post\\footer.html")
 		postContentPath = os.path.join(os.getcwd(),"post\\save.html")
-		if os.path.exists(postHeaderPath) and os.path.exists(postFooterPath) and os.path.exists(postContentPath):
-			self.postHeader  = self.readHtml(postHeaderPath)
-			self.postFooter  = self.readHtml(postFooterPath)
-			self.postContent = self.readHtml(postContentPath)
+		self.postHeader  = self.readHtml(postHeaderPath)
+		self.postFooter  = self.readHtml(postFooterPath)
+		self.postContent = self.readHtml(postContentPath)
+
+		# Share Page
+		shareHeaderPath = indexHeaderPath
+		shareFooterPath = os.path.join(os.getcwd(),"share\\footer.html")
+		shareTemplatePath = os.path.join(os.getcwd(),"share\\template.html")
+		self.shareHeader = self.readHtml(shareHeaderPath)
+		self.shareFooter   = self.readHtml(shareFooterPath)
+		self.shareTemplate = self.readHtml(shareTemplatePath)
+
 
 	def readHtml(self,path):
 		with open(path,"rt") as f:
@@ -57,22 +65,53 @@ class BlogMaker(object):
 		fileName = "".join([self.rootPath,"\\post\\",self.title,".html"])
 		self.writeHtml(fileName,self.post)
 
-	def writeIndexPage(self):
+	def writeIndexPage(self, indexTitle = "Welcome", indexSubtitle = "To my blog"):
 		contentList = []
 		for infoData in self.data.split("\n"):
 			title,subtitle,time = infoData.split(";")
 			href = '"post/%s.html"' % title
 			cont = self.indexTemplate % (href,title,subtitle,time)
 			contentList.append(cont)
+
 		content = "\n".join(contentList)
+		self.indexHeader = self.indexHeader % (indexTitle,indexSubtitle)
+
 		index = "\n". join([self.indexHeader,content,self.indexFooter])
 		fileName = os.path.join(self.rootPath,"index.html")
 		self.writeHtml(fileName,index)
 
+	def writeSharePage(self, shareTitle = "Share", shareSubtitle = "All Posts"):
+		shareList = []
+		ym = None
+		for infoData in self.data.split("\n"):
+			title,_,time = infoData.split(";")
+			href = '"post/%s.html"' % title
+			cont = self.shareTemplate % (href,title)
+			print time
+			temp = "".join(["<P>",time.split(".")[-1]," ",time.split(".")[0].split(" ")[0],"</P>"])
+			if temp != ym:
+				saveList = [temp,cont]
+				shareList.append(saveList)
+				ym = temp
+			else:
+				saveList.append(cont)
+
+			print shareList
+
+		content = []
+		for listPost in shareList:
+			content.append("\n".join(listPost))
+		content = "\n".join(content)
+		self.shareHeader = self.shareHeader % (shareTitle,shareSubtitle)
+		share = "\n".join([self.shareHeader,content,self.shareFooter])
+		fileName = os.path.join(self.rootPath,"share.html")
+		self.writeHtml(fileName,share)
+
+
 
 if __name__ == '__main__':
 
-	title     = "Test"
-	subtitle  = "Test"
+	title     = "Lin Ying Yi Life"
+	subtitle  = "Lin Ying Yi"
 	BlogMaker(title,subtitle)
 
