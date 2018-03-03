@@ -1,3 +1,79 @@
-<h1> This is just a Test </h1>
-<p> I think you can do that </p>
-<p> haha.Good job </p>
+<h3><a id="Introduction_2"></a>Introduction</h3>
+<p>disadvantage of traditional payment:</p>
+<ul>
+<li>traditional payment rely on the financial institutions as the trusted third parties.</li>
+<li>completely non-reversible transactions are not possible, because financial instituions can not avoid mediating disputes.</li>
+<li>the cost of mediation.</li>
+<li>limiting the minimum practical transaction size.</li>
+<li>certain percentage of fraud.</li>
+</ul>
+<p>advantage of electronic payment based on cryptographic proof:</p>
+<ul>
+<li>allow to transact directly without the need for a trusted third party.</li>
+<li>non-reversible transactions</li>
+<li>no limit for minimum transaction size</li>
+</ul>
+<h3><a id="Transactions_16"></a>Transactions</h3>
+<p>First, electronic coin is a chain of digital signatures. Each signature is consists of a hash of the previous transaction and the public key of the next owner. Then if we combine all of these signatures following the order of timestamp, that is an electronic coin.</p>
+<p>The payee can verify the signatures to verify the chain of ownership. (1) How we can achieve this? Let’s be the first problem in our problem set. I will try to answer all of problems in my new post.</p>
+<p>If we are the payee, and we successfully verified the ownership of coin. How can we continue to verify that the owner did not double-spend the coin? The traditional solution is to introduce a trusted central authority (Bank) to help us, to check whether our transaction is double spending.</p>
+<p>How to find a way to know that the previous owners did not sign any earlier transactions? For the trusted third partie, they have to be aware of all transactions. Although we do not have the trusted party, we can publicly announce our transaction and let other participants help us to check our transaction. (2) So how can we design such a system to accomplish the target? That is our second question.</p>
+<h3><a id="Timestamp_Server_26"></a>Timestamp Server</h3>
+<blockquote>
+<p>A timestamp server works by taking a hash of a block of items to be timestamped and widely publishing  the hash. The timestamp proves that the data must have existed at the time, obviously, in order to get into the hash. Each timestamp includes the previous timestamp in its hash, forming a chain, with each additional timestamp reinforcing the ones before it.</p>
+</blockquote>
+<p>(3) How we can understand the concept of timestamps? What is it useful for?</p>
+<h3><a id="ProofofWork_31"></a>Proof-of-Work</h3>
+<p>Proof-of-Work is the system we need in solving double spending. So that is the answer for our second question in problem set. Let’s explore the mechanism of Proof-of-Work.</p>
+<p>The work we need to proof is to find a value, which decide the number of zero bits of hash in the begining. The average work required is exponential in the numberof zero bits required. The last section indtoduce the timestamp. The  timestamp network actually is a chain of block with a nonce. Each block consists of two parts.The first part is the hash of previous block, and the second part is a nonce. Before you proof the work of that block, you can not change the block. Since the blocks are nest, the work to change the block would include redoing all the blocks after it. That is the key to prevent some participants to modify the transactions, unless he have enough chances to proof the work before other participants.</p>
+<p>The proof-of-work also solves the problem of determining representation in majority decision making. As the author saying, “The majority decision is represented by the longest chain, which has the greatest proof-of-work effort invested in it. If a majority of CPU power is controlled by honest nodes, the honest chain will grow the fastest and outpace any competing chains. To modify a past block, an attacker would have to redo the proof-of-work of the block and all blocks after it and then catch up with and surpass the work of the honest nodes.”</p>
+<p>Here have a new problem, “the proof-of-work difficulty is determined by a moving average targeting an average number of blocks per hour. If they’re generated too fast, the difficulty increases.” If the participants spend too much time in the proof. Obviously, it will increase the cost of transactions.</p>
+<h3><a id="Network_41"></a>Network</h3>
+<p>The steps to run the network are as follows:</p>
+<ol>
+<li>New transactions are broadcast to all nodes.</li>
+<li>Each node collects new transactions into a block.</li>
+<li>Each node works on finding a difficult proof-of-work for its block.</li>
+<li>When a node finds a proof-of-work, it broadcasts the block to all nodes.</li>
+<li>Nodes accept the block only if all transactions in it are valid and not already spent.</li>
+<li>Nodes express their acceptance of the block by working on creating the next block in the chain, using the hash of the accepted block as the previous hash.</li>
+</ol>
+<p>Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proofof-work is found and one branch becomes longer; the nodes that were working on the other branch will then switch to the longer one.</p>
+<p>New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped messages. If a node does not receive a block, it will request it when it receives the next block and realizes it missed one.</p>
+<h3><a id="Incentive_55"></a>Incentive</h3>
+<p>Incentive is very important for the Bitcoin, since it encourage the participants to be the nodes to support the network. In Bitcoin, the first transaction of each block would awards the creator of the block with  a constant of amount of new coins. Otherwise, the incentive can also be funded with transaction fees. “If the output value of a transaction is less than its input value, the difference is a transaction fee that is added to the incentive value of the block containing the transaction”.</p>
+<h3><a id="Reclaiming_Disk_Space_59"></a>Reclaiming Disk Space</h3>
+<blockquote>
+<p>transactions are hashed in a Merkle Tree, with only the root included in the block’s hash. Old blocks can then be compacted by stubbing off branches of the tree.  The interior hashes do not need to be stored</p>
+</blockquote>
+<ol start="4">
+<li>What Merkle Tree is?</li>
+</ol>
+<h3><a id="Simplified_Payment_Verification_66"></a>Simplified Payment Verification</h3>
+<blockquote>
+<p>It is possible to verify payments without running a full network node.  A user only needs to keep a copy of the block headers of the longest proof-of-work chain, which he can get by querying network nodes until he’s convinced he has the longest chain, and obtain the Merkle branch linking the transaction to the block it’s timestamped in.  He can’t check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it, and blocks added after it further confirm the network has accepted it.</p>
+</blockquote>
+<blockquote>
+<p>As such, the verification is reliable as long as honest nodes control the network, but is more vulnerable if the network is overpowered by an attacker.  While network nodes can verify transactions for themselves, the simplified method can be fooled by an attacker’s fabricated transactions for as long as the attacker can continue to overpower the network.  One strategy to protect against this would be to accept alerts from network nodes when they detect an invalid block, prompting the user’s software to download the full block and alerted transactions to confirm the inconsistency.  Businesses that receive frequent payments will probably still want to run their own nodes for more independent security and quicker verification.</p>
+</blockquote>
+<h3><a id="Combining_and_Splitting_Value_72"></a>Combining and Splitting Value</h3>
+<blockquote>
+<p>Although it would be possible to handle coins individually, it would be unwieldy to make a separate transaction for every cent in a transfer.  To allow value to be split and combined, transactions contain multiple inputs and outputs.  Normally there will be either a single input from a larger previous transaction or multiple inputs combining smaller amounts, and at most two outputs: one for the payment, and one returning the change, if any, back to the sender.</p>
+</blockquote>
+<blockquote>
+<p>It should be noted that fan-out, where a transaction depends on several transactions, and those transactions depend on many more, is not a problem here.  There is never the need to extract a complete standalone copy of a transaction’s history.</p>
+</blockquote>
+<h3><a id="Privacy_78"></a>Privacy</h3>
+<blockquote>
+<p>The traditional banking model achieves a level of privacy by limiting access to information to the parties involved and the trusted third party.  The necessity to announce all transactions publicly precludes this method, but privacy can still be maintained by breaking the flow of information in another place: by keeping public keys anonymous.  The public can see that someone is sending an amount to someone else, but without information linking the transaction to anyone.  This is similar to the level of information released by stock exchanges, where the time and size of individual trades, the “tape”, is made public, but without telling who the parties were.</p>
+</blockquote>
+<blockquote>
+<p>As an additional firewall, a new key pair should be used for each transaction to keep them from being linked to a common owner.  Some linking is still unavoidable with multi-input transactions, which necessarily reveal that their inputs were owned by the same owner.  The risk is that if the owner of a key is revealed, linking could reveal other transactions that belonged to the same owner.</p>
+</blockquote>
+<h3><a id="Problem_Sets_86"></a>Problem Sets:</h3>
+<ol>
+<li>How can we verify the chain of ownership?</li>
+<li>how can we design a system without third trusted parties to avoid double spending?</li>
+<li>How we can understand the concept of timestamps? What is it useful for?</li>
+<li>What Merkle Tree is?</li>
+</ol>

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import datetime
 
@@ -48,7 +50,7 @@ class BlogMaker(object):
 
 	def writeHtml(self,path,data):
 		with open(path,"wt") as f:
-			f.write(data.encode('utf-8'))
+			f.write(data)
 
 	def recordInfo(self):
 		path = os.path.join(os.getcwd(),"post\\info.txt")
@@ -87,7 +89,6 @@ class BlogMaker(object):
 			title,_,time = infoData.split(";")
 			href = '"post/%s.html"' % title
 			cont = self.shareTemplate % (href,title)
-			print time
 			temp = "".join(["<P>",time.split(".")[-1]," ",time.split(".")[0].split(" ")[0],"</P>"])
 			if temp != ym:
 				saveList = [temp,cont]
@@ -95,8 +96,6 @@ class BlogMaker(object):
 				ym = temp
 			else:
 				saveList.append(cont)
-
-			print shareList
 
 		content = []
 		for listPost in shareList:
@@ -111,7 +110,7 @@ class BlogMaker(object):
 
 if __name__ == '__main__':
 
-	title     = "Lin Ying Yi Life"
-	subtitle  = "Lin Ying Yi"
+	title     = "Bitcoin: A Peer-toPeer Electronic Cash System, by Satoshi Nakamoto"
+	subtitle  = "Bitcoin become more and more popular. My note will figure out every details about bitcoin."
 	BlogMaker(title,subtitle)
 
