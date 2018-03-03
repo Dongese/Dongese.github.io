@@ -1,2 +1,2 @@
-Bitcoin: A Peer-toPeer Electronic Cash System, by Satoshi Nakamoto;Bitcoin become more and more popular. My note will figure out every details about bitcoin.;03 03.2018
+Bitcoin, A Peer to Peer Electronic Cash System, By Satoshi Nakamoto;Bitcoin become more and more popular. My note will figure out every details about bitcoin.;03 03.2018
 Neural Networks and Deep Learning, By Michael Nielsen;Chapter 1: Using neural nets to recognize handwritten digits;11 21.2017

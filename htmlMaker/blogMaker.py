@@ -110,7 +110,7 @@ class BlogMaker(object):
 
 if __name__ == '__main__':
 
-	title     = "Bitcoin: A Peer-toPeer Electronic Cash System, by Satoshi Nakamoto"
+	title     = "Bitcoin, A Peer to Peer Electronic Cash System, By Satoshi Nakamoto"
 	subtitle  = "Bitcoin become more and more popular. My note will figure out every details about bitcoin."
 	BlogMaker(title,subtitle)
 
